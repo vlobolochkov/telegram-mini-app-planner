@@ -53,6 +53,7 @@
       try {
         const res = await fetch(`http://192.168.22.59:5000/tasks?user_id=${userId}`);
         tasks = await res.json();
+        console.log("Загруженные задачи:", tasks);
         renderTasks();
       } catch (err) {
         console.error("Ошибка при загрузке задач:", err);
@@ -63,6 +64,8 @@
       const text = input.value.trim();
       if (!text) return;
 
+      console.log("Добавляется задача:", text);
+
       try {
         const res = await fetch("http://192.168.22.59:5000/tasks", {
           method: "POST",
@@ -71,8 +74,10 @@
         });
 
         const data = await res.json();
+        console.log("Ответ от сервера:", data);
+
         if (data.status === "ok") {
-          tasks.push(text);
+          tasks.push({ id: Date.now(), text });
           renderTasks();
           input.value = '';
         } else {
@@ -88,7 +93,7 @@
       tasks.forEach((task, index) => {
         const div = document.createElement('div');
         div.className = 'task-item';
-        div.textContent = `${index + 1}. ${task}`;
+        div.textContent = `${index + 1}. ${task.text || task}`;
         taskList.appendChild(div);
       });
     }
@@ -96,12 +101,8 @@
     // Инициализация
     window.addEventListener("DOMContentLoaded", () => {
       const initData = tg.initDataUnsafe;
-      if (!initData || !initData.user || !initData.user.id) {
-        alert("Не удалось получить user_id");
-        return;
-      }
-
-      userId = String(initData.user.id);
+      userId = initData?.user?.id ? String(initData.user.id) : "test_user";
+      console.log("user_id:", userId);
       fetchTasks();
     });
   </script>
