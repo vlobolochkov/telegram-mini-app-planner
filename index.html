@@ -51,7 +51,7 @@
 
     async function fetchTasks() {
       try {
-        const res = await fetch(`http://localhost:5000/tasks?user_id=${userId}`);
+        const res = await fetch(`http://192.168.22.59:5000/tasks?user_id=${userId}`);
         tasks = await res.json();
         renderTasks();
       } catch (err) {
@@ -64,7 +64,7 @@
       if (!text) return;
 
       try {
-        const res = await fetch("http://localhost:5000/tasks", {
+        const res = await fetch("http://192.168.22.59:5000/tasks", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: userId, text })
